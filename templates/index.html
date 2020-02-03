@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Loan Pre-Approval</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type='text/css' href="./static/style.css">
+  
+</head>
+
+<body style="background: #FFF;">
+ 
+ <div class="login">
+  {% if show_title %}
+	{{title}}
+  <br><br>
+  {% endif %}
+    {% if show_forms %}
+    <form action="{{ url_for('predict')}}"method="post">
+      <label for="loan_amnt">How much do you want to borrow?</label>
+    	<input type="text" name="loan_amnt" placeholder="Amount Requested" required="required" />
+      <label for="loan_amnt">How much do you make per year?</label>
+        <input type="text" name="annual_inc" placeholder="Annual Income" required="required" />
+        <label for="loan_amnt">What is your estimated credit score?</label>
+          <input type="text" name="fico" placeholder="Credit Score" required="required" />
+          <label for="loan_amnt">How long have you been at your current job?</label>
+            <input type="text" name="emp_length" placeholder="Length of Current Employment (Months)" required="required" />
+              <label for="loan_amnt">Do you own or rent?</label>
+              <select name = "home_ownership" required="required">
+                  <option disabled selected>Home ownership status</option>
+                  {% for home_option in home_owners %}
+                  <option value= "{{home_option}}" >{{home_option}}</option>
+                  {% endfor %}
+              </select><br>
+              <label for="loan_amnt">Where do you live?</label>
+              <select name = "state" required="required">
+                  <option disabled selected>State of residence</option>
+                  {% for s in states %}
+                  <option value= "{{s}}" >{{s}}</option>
+                  {% endfor %}
+              </select><br>
+              <label for="loan_amnt">What will you use the loan for?</label>
+                  <select name = "loan_purpose" required="required">
+                  <option disabled selected>Purpose of loan</option>
+                  {% for p in purposes %}
+                  <option value= "{{p}}" >{{p}}</option>
+                  {% endfor %}
+              </select><br>
+              <label for="loan_amnt">Will you be adding a cosigner?</label>
+              <select name="joint_application" required="required">
+                  <option disabled selected>Cosigner</option>
+                  <option value=1 >Yes</option>
+                  <option value=0 >No</option>          
+              </select><br>
+        <button type="submit" class="btn btn-primary btn-block btn-large">See if you're pre-approved!</button>
+    </form>
+    {% endif %}
+
+   <br><br><br>
+   {{ results_text }}
+   <br><br><br>
+
+   {% if show_cards %}
+       <div class="row">
+        {% for option in loan_options %}
+          <div class="column">
+            <div class="card">${{loan_amnt}}</div>
+            <div class="card">{{option[0]}}</div>
+            <div class="card">{{option[1]}}</div>
+            <div class="card">{{option[2]}}</div>
+            <br><br>
+          </div>
+        
+        {% endfor %}
+        </div>
+    {% endif %}
+
+ </div>
+</body>
+</html>
+
+<style>
+  body { 
+  width: 200%;
+  height:100%;
+  font-family: 'Helvetica';
+  background: #000;
+  color: #000;
+  font-size: 24px;
+  text-align:center;
+  letter-spacing:1.4px;
+}
+
+label {
+   display:inline;
+   width:500px;
+   font-size:14px;
+}
+
+.login { 
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  top: 20%;
+  width:400px;
+  height:400px;
+}
+.login h1 { 
+  color: #000; 
+  text-shadow: 0 0 10px rgba(0,0,0,0.3); 
+  letter-spacing:1px; 
+  text-align:left; 
+  font-size=6px;
+}
+.login h2 { 
+  color: #000; 
+  text-shadow: 0 0 10px rgba(0,0,0,0.3); 
+  letter-spacing:1px; 
+  text-align:center; 
+  font-size=6px;
+}
+
+input { 
+  width: 100%; 
+  background: rgba(0,0,0,0.3);
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 13px;
+  color: #000;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 4px;
+  box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+  -webkit-transition: box-shadow .5s ease;
+  -moz-transition: box-shadow .5s ease;
+  -o-transition: box-shadow .5s ease;
+  -ms-transition: box-shadow .5s ease;
+  transition: box-shadow .5s ease;
+}
+select {
+  width: 100%; 
+  margin-bottom: 10px; 
+  background: rgba(0,0,0,0.3);
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 13px;
+  color: #000;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 4px;
+  box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+  -webkit-transition: box-shadow .5s ease;
+  -moz-transition: box-shadow .5s ease;
+  -o-transition: box-shadow .5s ease;
+  -ms-transition: box-shadow .5s ease;
+  transition: box-shadow .5s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 50%;
+  padding: 0 10px;
+}
+
+/* Remove extra left and right margins, due to padding in columns */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+  padding: 16px;
+  text-align: center;
+  background-color: #f1f1f1;
+}
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+</style>
